@@ -1,0 +1,13 @@
+cmake-build-*/
+build/
+.idea/
+*.obj
+*.o
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+.DS_Store
+Thumbs.db
