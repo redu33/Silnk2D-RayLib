@@ -5,19 +5,39 @@
 
 using namespace std;
 
+struct Config {
+    int width = 1280;
+    int height = 720;
+    string title = "Silnik 2D";
+    bool fullscreen = false;
+    int FPS = 60;
+    bool enableKeyboard = true;
+    bool enableMouse = true;
+    bool logs = true;
+    Color clearColor = WHITE;
+};
+
 class Engine {
-private:
-    bool isRunning;
 public:
-    Engine();
-    bool initialize(int width, int height, const string &title, int framerate, bool fullscreen);
+    Config config;
+
+    bool init();
     void run();
-    void close();
-    void screenClear(Color color = RED);
-    void logMessage(const string &message);
+    void shutdown();
+
+    void clnScreen(Color color);
+    void logError(const string &logMessage);
+    void logInfo(const string &logMessage);
+
+    bool isKeyDown(int key);
     bool isKeyPressed(int key);
+    bool isMouseDown(int button);
     bool isMousePressed(int button);
-    Vector2 getMousePosition();
+
+private:
+    void handleInput();
+    void updateLogic(float deltaTime);
+    void renderScreen();
 };
 
 

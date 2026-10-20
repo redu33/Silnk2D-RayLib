@@ -1,59 +1,125 @@
 #include "Engine.h"
-#include "raylib.h"
 
-Engine::Engine() {
-    isRunning = false;
-}
+#include <complex>
+#include <iostream>
 
-bool Engine::initialize(int width, int height, const string &title, int framerate, bool fullscreen) {
-    InitWindow(width, height, title.c_str());
-    if (fullscreen) {
-        ToggleFullscreen();
+bool Engine::init(){
+    SetTraceLogLevel(7);
+
+    logInfo("Inicjalizacja silnika...");
+
+    if (config.fullscreen) {
+        SetConfigFlags(FLAG_FULLSCREEN_MODE);
     }
-    SetTargetFPS(framerate);
-    isRunning = IsWindowReady();
-    return isRunning;
+
+    if (config.width <= 0 || config.height <= 0) {
+        logError("Nie udalo sie zainicjalizowac silnika.");
+        logError("Niepoprawna rozdzielczosc.");
+        return false;
+    }
+
+    InitWindow(config.width, config.height, config.title.c_str());
+
+    if (!IsWindowReady()) {
+        logError("Nie udalo sie zainicjalizowac silnika.");
+        return false;
+    }
+
+    if (config.FPS > 0) {
+        SetTargetFPS(config.FPS);
+    } else {
+        logError("Nie udalo sie zainicjalizowac silnika.");
+        logError("Niepoprawna liczba klatek na sekunde.");
+        return false;
+    }
+
+    logInfo("Silnik zostal poprawnie zainicjalizowany.");
+    return true;
 }
 
-void Engine::run() {
-    while (!WindowShouldClose() && isRunning) {
+void Engine::run(){
+    logInfo("Uruchomiono glowna petle.");
+    while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
-
-        if (isKeyPressed(KEY_ESCAPE)) {
-            close();
-        }
-
-        BeginDrawing();
-        screenClear(RED);
-        DrawText(TextFormat("MOJANG"), 550, 450, 200, WHITE);
-        DrawText(TextFormat("Loading..."), 750, 750, 100, WHITE);
-        EndDrawing();
+        handleInput();
+        updateLogic(deltaTime);
+        renderScreen();
     }
-    if (IsWindowReady()) {
-        CloseWindow();
-    }
+    logInfo("Zakonczono glowna petle.");
 }
 
-void Engine::close() {
-    isRunning = false;
+void Engine::shutdown(){
+    if (!IsWindowReady()) {
+        return;
+    }
+    logInfo("Zamykanie, zwalnianie zasobow.");
+    CloseWindow();
+    logInfo("Poprawnie zamknieto.");
 }
 
-void Engine::screenClear(Color color) {
+void Engine::clnScreen(Color color){
     ClearBackground(color);
 }
 
-void Engine::logMessage(const string &message) {
-    printf("%s\n", message.c_str());
+void Engine::logError(const string &logMessage){
+    if (config.logs) {
+        cerr << "BLAD: " << logMessage << endl;
+    }
 }
 
-bool Engine::isKeyPressed(int key) {
-    return IsKeyDown(key);
+void Engine::logInfo(const string &logMessage){
+    if (config.logs) {
+        cout << "INFO: " << logMessage << endl;
+    }
 }
 
-bool Engine::isMousePressed(int button) {
-    return IsMouseButtonPressed(button);
+bool Engine::isKeyDown(int key){
+    return (config.enableKeyboard && IsKeyDown(key));
 }
 
-Vector2 Engine::getMousePosition() {
-    return GetMousePosition();
+bool Engine::isKeyPressed(int key){
+    return (config.enableKeyboard && IsKeyPressed(key));
+
+}
+
+bool Engine::isMouseDown(int button){
+    return (config.enableMouse && IsMouseButtonDown(button));
+
+}
+
+bool Engine::isMousePressed(int button){
+    return (config.enableMouse && IsMouseButtonPressed(button));
+
+}
+
+void Engine::handleInput(){
+    if (config.enableKeyboard) {
+        if (isKeyPressed(KEY_ONE)) {
+            config.clearColor = RED;
+        }
+        if (isKeyPressed(KEY_TWO)) {
+            config.clearColor = GREEN;
+        }
+        if (isKeyPressed(KEY_THREE)) {
+            config.clearColor = BLUE;
+        }
+    }
+    if (config.enableMouse) {
+        if (isMousePressed(MOUSE_BUTTON_LEFT)) {
+            Vector2 pos = GetMousePosition();
+            logInfo("Przycisnieto w " + to_string((int)pos.x) + ", " + to_string((int)pos.y) + ".");
+        }
+    }
+}
+
+void Engine::updateLogic(float deltaTime){
+    // todo
+}
+
+void Engine::renderScreen(){
+    BeginDrawing();
+    clnScreen(config.clearColor);
+    DrawText("Sterowanie: LPM - mysz, 1/2/3 - kolor tla, ESC - wyjscie", 10, 10, 16, BLACK);
+    DrawFPS(10, 35);
+    EndDrawing();
 }
