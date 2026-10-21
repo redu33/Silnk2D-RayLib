@@ -77,20 +77,14 @@ void Engine::logInfo(const string &logMessage){
 bool Engine::isKeyDown(int key){
     return (config.enableKeyboard && IsKeyDown(key));
 }
-
 bool Engine::isKeyPressed(int key){
     return (config.enableKeyboard && IsKeyPressed(key));
-
 }
-
 bool Engine::isMouseDown(int button){
     return (config.enableMouse && IsMouseButtonDown(button));
-
 }
-
 bool Engine::isMousePressed(int button){
     return (config.enableMouse && IsMouseButtonPressed(button));
-
 }
 
 void Engine::handleInput(){
@@ -121,10 +115,9 @@ void Engine::renderScreen(){
     BeginDrawing();
     clnScreen(config.clearColor);
     DrawText("Sterowanie: LPM - mysz, 1/2/3 - kolor tla, ESC - wyjscie", 10, 10, 16, BLACK);
-    DrawFPS(10, 35);
-    Point2D p(100,100);
-    Point2D p2(300,300);
     PrimitiveRenderer renderer;
-    renderer.drawLine(p, p2, BLACK);
+
+
+
     EndDrawing();
 }
