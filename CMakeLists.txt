@@ -8,6 +8,8 @@ add_subdirectory(external/raylib)
 add_executable(Silnk2D src/main.cpp
         src/Engine.cpp
         src/Engine.h
+        src/Primitives.cpp
+        src/Primitives.h
 )
 
 target_link_libraries(Silnk2D PRIVATE raylib)

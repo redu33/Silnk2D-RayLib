@@ -2,6 +2,7 @@
 #define SILNK2D_ENGINE_H
 #include <raylib.h>
 #include <string>
+#include "Primitives.h"
 
 using namespace std;
 

@@ -1,6 +1,7 @@
 #include "Engine.h"
 
 #include <complex>
+#include <functional>
 #include <iostream>
 
 bool Engine::init(){
@@ -121,5 +122,9 @@ void Engine::renderScreen(){
     clnScreen(config.clearColor);
     DrawText("Sterowanie: LPM - mysz, 1/2/3 - kolor tla, ESC - wyjscie", 10, 10, 16, BLACK);
     DrawFPS(10, 35);
+    Point2D p(100,100);
+    Point2D p2(300,300);
+    PrimitiveRenderer renderer;
+    renderer.drawLine(p, p2, BLACK);
     EndDrawing();
 }
