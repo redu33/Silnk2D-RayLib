@@ -7,15 +7,19 @@
 using namespace std;
 
 struct Config {
-    int width = 1280;
-    int height = 720;
+    int width = 800;
+    int height = 600;
     string title = "Silnik 2D";
     bool fullscreen = false;
     int FPS = 60;
     bool enableKeyboard = true;
     bool enableMouse = true;
     bool logs = true;
-    Color clearColor = WHITE;
+    Color clearColor = BLACK;
+};
+
+enum class Shape {
+    LINE, RECTANGLE, CIRCLE, ELLIPSE, TRIANGLE, POLYGON
 };
 
 class Engine {
@@ -36,6 +40,7 @@ public:
     bool isMousePressed(int button);
 
 private:
+    vector<Shape> shapesToDraw;
     void handleInput();
     void updateLogic(float deltaTime);
     void renderScreen();
