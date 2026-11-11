@@ -34,6 +34,7 @@ bool Engine::init(){
         return false;
     }
 
+    renderer.initBuffer(config.width, config.height);
     logInfo("Silnik zostal poprawnie zainicjalizowany.");
     return true;
 }
@@ -112,7 +113,7 @@ void Engine::updateLogic(float deltaTime){
 void Engine::renderScreen(){
     BeginDrawing();
     clnScreen(config.clearColor);
-    PrimitiveRenderer renderer;
+    renderer.clearBuffer(config.clearColor);
 
     for (Shape shape : shapesToDraw) {
         switch (shape) {
@@ -121,15 +122,19 @@ void Engine::renderScreen(){
                 break;
             case Shape::RECTANGLE:
                 renderer.drawRectangle(Point2D(300, 200), 200, 200, GREEN);
+                renderer.boundryFill(Point2D(401, 296), GREEN, GREEN);
                 break;
             case Shape::CIRCLE:
                 renderer.drawCircle(Point2D(400, 300), 100, BLUE);
+                renderer.boundryFill(Point2D(401, 296), BLUE, BLUE);
                 break;
             case Shape::ELLIPSE:
                 renderer.drawEllipse(Point2D(400, 300), 150, 80, YELLOW);
+                renderer.boundryFill(Point2D(401, 296), YELLOW, YELLOW);
                 break;
             case Shape::TRIANGLE:
                 renderer.drawTriangle(Point2D(300, 200), Point2D(500, 200), Point2D(400, 400), ORANGE);
+                renderer.boundryFill(Point2D(401, 296), ORANGE, ORANGE);
                 break;
             case Shape::POLYGON:
                 vector<Point2D> wielokat = {
@@ -140,6 +145,7 @@ void Engine::renderScreen(){
                 Point2D(300, 270)
             };
                 renderer.drawPolygon(wielokat, MAGENTA);
+                renderer.boundryFill(Point2D(401, 296), MAGENTA, MAGENTA);
                 break;
         }
     }
@@ -147,4 +153,6 @@ void Engine::renderScreen(){
 
 
     // todo zad. 3 i reszta z 3 instr
+    // todo wypelnianie jednym ze sposobow wybranym
+    // todo obracanie wzgledem punktu jakiegos np srodka figury
 }

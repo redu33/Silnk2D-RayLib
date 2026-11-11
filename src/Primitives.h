@@ -2,6 +2,7 @@
 #define SILNK2D_PRIMITIVES_H
 #include <raylib.h>
 #include <vector>
+#include <stack>
 
 using namespace std;
 
@@ -38,6 +39,10 @@ public:
 };
 
 class PrimitiveRenderer {
+private:
+    int screenWidth;
+    int screenHeight;
+    vector<vector<Color>> pixelBuffer;
 public:
     void drawPoint(Point2D p, Color color);
     void drawRectangle(Point2D p, int width, int height, Color color);
@@ -47,6 +52,12 @@ public:
     void drawPolygon(vector<Point2D> &points, Color color);
     void drawLine(Point2D p1, Point2D p2, Color color);
     void drawPolyline(vector<Point2D> &points, Color color, bool isClosed);
+
+    void initBuffer(int width, int height);
+    Color getPixelColor(int x, int y);
+    void clearBuffer(Color clearColor);
+    bool areColorsEqual(Color c1, Color c2);
+    void boundryFill(Point2D seed, Color fillColor, Color boundryColor);
 };
 
 #endif

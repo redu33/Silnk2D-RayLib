@@ -27,7 +27,13 @@ void Point2D::draw(PrimitiveRenderer &renderer, Color color){
 
 
 void PrimitiveRenderer::drawPoint(Point2D p, Color color) {
-    DrawPixel(p.getX(), p.getY(), color);
+    int x = p.getX();
+    int y = p.getY();
+
+    if (x >= 0 && x < screenWidth && y >= 0 && y < screenHeight) {
+        DrawPixel(x, y, color);
+        pixelBuffer[x][y] = color;
+    }
 }
 void PrimitiveRenderer::drawRectangle(Point2D p, int width, int height, Color color) {
     vector<Point2D> punkty = {
@@ -56,7 +62,8 @@ void PrimitiveRenderer::drawEllipse(Point2D p, int rx, int ry, Color color){
     int x0 = p.getX();
     int y0 = p.getY();
     int maxR = max(abs(rx), abs(ry));
-    float step = 1.0f / maxR;
+
+    float step = 1.0f / (maxR * 2.0f);
 
     for (float a = 0; a <= M_PI / 2.0f; a += step) {
         int x = rx * cos(a) + 0.5f;
@@ -119,6 +126,46 @@ void PrimitiveRenderer::drawPolyline(vector<Point2D> &points, Color color, bool 
     }
     if (isClosed) {
         drawLine(points[points.size() - 1], points[0], color);
+    }
+}
+void PrimitiveRenderer::initBuffer(int width, int height) {
+    screenWidth = width;
+    screenHeight = height;
+    pixelBuffer.resize(screenWidth, vector<Color>(screenHeight, BLACK));
+}
+Color PrimitiveRenderer::getPixelColor(int x, int y) {
+    if (x >= 0 && x < screenWidth && y >= 0 && y < screenHeight) {
+        return pixelBuffer[x][y];
+    }
+    return BLACK;
+}
+void PrimitiveRenderer::clearBuffer(Color clearColor) {
+    for (int x = 0; x < screenWidth; x++) {
+        for (int y = 0; y < screenHeight; y++) {
+            pixelBuffer[x][y] = clearColor;
+        }
+    }
+}
+bool PrimitiveRenderer::areColorsEqual(Color c1, Color c2) {
+    return (c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a);
+}
+void PrimitiveRenderer::boundryFill(Point2D seed, Color fillColor, Color boundaryColor) {
+    std::stack<Point2D> dsd;
+    dsd.push(seed);
+    while (!dsd.empty()) {
+        Point2D p = dsd.top();
+        dsd.pop();
+        int x = p.getX();
+        int y = p.getY();
+        Color currentColor = getPixelColor(x, y);
+        if (areColorsEqual(currentColor, fillColor) || areColorsEqual(currentColor, boundaryColor)) {
+            continue;
+        }
+        drawPoint(p, fillColor);
+        dsd.push(Point2D(x, y - 1));
+        dsd.push(Point2D(x, y + 1));
+        dsd.push(Point2D(x - 1, y));
+        dsd.push(Point2D(x + 1, y));
     }
 }
 

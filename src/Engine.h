@@ -41,6 +41,7 @@ public:
 
 private:
     vector<Shape> shapesToDraw;
+    PrimitiveRenderer renderer;
     void handleInput();
     void updateLogic(float deltaTime);
     void renderScreen();
